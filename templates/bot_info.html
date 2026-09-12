@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Entry/Exit Configuration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Consolas', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .header {
+            background: #2a2a2a;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        h1 { color: #fff; margin-bottom: 10px; }
+        .subtitle { color: #999; font-size: 0.9em; }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-button {
+            padding: 10px 16px;
+            background: #333;
+            border: 1px solid #555;
+            color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .tab-button:hover { background: #444; border-color: #666; }
+        .tab-button.active { background: #667eea; border-color: #667eea; color: #fff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .bot-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .bot-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+        }
+
+        .section {
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1a1a1a;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background: #333;
+            font-weight: bold;
+            color: #fff;
+        }
+        tr:hover { background: #2a2a2a; }
+
+        .key-info {
+            background: #333;
+            padding: 12px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 12px;
+            border-radius: 3px;
+        }
+        .key-label {
+            color: #999;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+        .key-value {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 1024px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #444;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        .badge-entry { background: #3a4a1a; color: #4ade80; }
+        .badge-exit { background: #4a2a1a; color: #fbbf24; }
+        .badge-stop { background: #4a1a1a; color: #ef4444; }
+
+        .shared-exit {
+            background: #1a3a3a;
+            border-left: 3px solid #4ade80;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .shared-exit h3 { color: #4ade80; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 BOT ENTRY/EXIT CONFIGURATION</h1>
+            <p class="subtitle">Complete trading strategy specifications | Exit time: 15:10 IST (3:10 PM)</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('shared')">Shared Exit</button>
+            <button class="tab-button" onclick="switchTab('orb-lite')">ORB-lite</button>
+            <button class="tab-button" onclick="switchTab('signals')">Signals Bot</button>
+            <button class="tab-button" onclick="switchTab('gbi-rbi')">GBI-RBI</button>
+            <button class="tab-button" onclick="switchTab('orb-ov')">ORB-OV</button>
+            <button class="tab-button" onclick="switchTab('scalper')">Scalper Bot</button>
+        </div>
+
+        <!-- SHARED EXIT MANAGER -->
+        <div id="shared" class="tab-content active">
+            <div class="bot-card">
+                <div class="bot-title">⚙️ SHARED EXIT MANAGER (ALL BOTS USE THIS)</div>
+                <p style="color: #999; margin-bottom: 16px;">Common exit rules apply to: ORB-lite, Signals Bot, GBI/RBI, ORB-OV, Scalper</p>
+
+                <div class="section">
+                    <div class="section-title">Exit Phases</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Trigger</th>
+                                <th>Action</th>
+                                <th>Stop Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Phase 1: Hard Stop</strong></td>
+                                <td>Opening position (any loss)</td>
+                                <td>Close if premium ≤ entry × (1 - 0.08)</td>
+                                <td><span style="color: #ef4444;">-8% from entry</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 2: Breakeven</strong></td>
+                                <td>Premium gained +5%</td>
+                                <td>Move stop to entry price</td>
+                                <td><span style="color: #4ade80;">Entry price (no loss)</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 3: Trailing Stop</strong></td>
+                                <td>Premium gained +10%</td>
+                                <td>Stop trails 5% below peak</td>
+                                <td><span style="color: #4ade80;">5% below peak</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Step Ladder Profit Locking (Rupee-Based)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Profit Level</th>
+                                <th>Trigger</th>
+                                <th>Stop Floor</th>
+                                <th>Bot Increment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Rung 0</td>
+                                <td>peak_profit >= ₹1,000</td>
+                                <td>Ladder activates</td>
+                                <td>₹1,000 minimum</td>
+                            </tr>
+                            <tr>
+                                <td>Rung 1</td>
+                                <td>Peak ₹1,000-₹1,499</td>
+                                <td>entry + ₹500</td>
+                                <td><span style="color: #667eea;">₹500</span> (ORB-lite, Signals, GBI/RBI, ORB-OV)</td>
+                            </tr>
+                            <tr>
+                                <td>Rung 2</td>
+                                <td>Peak ₹1,500-₹1,999</td>
+                                <td>entry + ₹1,000</td>
+                                <td><span style="color: #667eea;">₹500 per step</span></td>
+                            </tr>
+                            <tr>
+                                <td>Rung 3+</td>
+                                <td>Peak ₹2,000+</td>
+                                <td>Continues in steps</td>
+                                <td><span style="color: #667eea;">Continues indefinitely</span></td>
+                            </tr>
+                            <tr>
+                                <td>Trail SL Only</td>
+                                <td>Same ladder rules</td>
+                                <td>Same ₹1,000 start</td>
+                                <td><span style="color: #fbbf24;">₹300 per step</span> (different!)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="key-info">
+                    <div class="key-label">⚡ Key Rule</div>
+                    <div class="key-value">Whichever is TIGHTER: % stop OR rupee ladder → USE IT</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORB-LITE -->
+        <div id="orb-lite" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">📈 ORB-LITE (Opening Range Breakout)</div>
+
+                <div class="grid-2">
+                    <div class="key-info">
+                        <div class="key-label">Entry Time</div>
+                        <div class="key-value">09:15 - 09:30 IST</div>
+                    </div>
+                    <div class="key-info">
+                        <div class="key-label">Exit Time</div>
+                        <div class="key-value">15:10 IST (3:10 PM)</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Entry Criteria (5 Points)</div>
+                    <div style="background: #333; padding: 12px; border-radius: 4px;">
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">1. Time Window</span>
+                            Open 09:15 IST, ORB duration 15 minutes until 09:30
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">2. Range Setup</span>
+                            Lock high/low by 09:30 from 15-min LTP polls (not candle OHLC)
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">3. Breakout Signal</span>
+                            Close 1% above ORB high = BUY CE | Close 1% below ORB low = BUY PE
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">4. Strike Selection</span>
+                            ATM ± 1 step (NIFTY: 50pt, BANKNIFTY: 100pt) | Round to nearest
+                        </div>
+                        <div>
+                            <span class="badge badge-entry">5. Position Size</span>
+                            risk_amt (₹500) / stop_dist / lot = qty | Rounded to whole lots only
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Position Rules</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rule</th>
+                                <th>Value</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Max Concurrent</td>
+                                <td>2 positions</td>
+                                <td>NIFTY + BANKNIFTY max | Won't scale into same symbol</td>
+                            </tr>
+                            <tr>
+                                <td>No New Entries After</td>
+                                <td>14:30 IST</td>
+                                <td>Last 40 minutes before close</td>
+                            </tr>
+                            <tr>
+                                <td>Daily Loss Gate</td>
+                                <td>-0.6% (₹3k on ₹500k)</td>
+                                <td>Circuit breaker → halt new entries</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Exit Strategy</div>
+                    <div style="background: #1a3a3a; border-left: 3px solid #4ade80; padding: 12px; border-radius: 4px;">
+                        ✓ Phase 1: Hard Stop <span style="color: #ef4444;">-8%</span><br>
+                        ✓ Phase 2: Breakeven at <span style="color: #4ade80;">+5% gain</span><br>
+                        ✓ Phase 3: Trail <span style="color: #4ade80;">+10% gain, 5% below peak</span><br>
+                        ✓ Ladder: <span style="color: #667eea;">₹500 steps</span> starting at ₹1,000 profit<br>
+                        ✓ Force Close: 15:10 IST (3:10 PM)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIGNALS BOT -->
+        <div id="signals" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">🎯 SIGNALS BOT (Multi-Indicator)</div>
+
+                <div class="grid-2">
+                    <div class="key-info">
+                        <div class="key-label">Entry Time</div>
+                        <div class="key-value">09:20 IST (after market open)</div>
+                    </div>
+                    <div class="key-info">
+                        <div class="key-label">Exit Time</div>
+                        <div class="key-value">15:10 IST (3:10 PM)</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">4 Entry Indicators (5 Points Each)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Indicator</th>
+                                <th>Entry Signal</th>
+                                <th>Direction</th>
+                                <th>Strike</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>VWAP Reversion</strong></td>
+                                <td>Close reverts UP from lower band</td>
+                                <td>Long</td>
+                                <td>ATM CE</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>VWAP Reversion</strong></td>
+                                <td>Close reverts DOWN from upper band</td>
+                                <td>Short</td>
+                                <td>ATM PE</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>RSI Momentum</strong></td>
+                                <td>Exits oversold (<30)</td>
+                                <td>Long</td>
+                                <td>ATM CE</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>RSI Momentum</strong></td>
+                                <td>Exits overbought (>70)</td>
+                                <td>Short</td>
+                                <td>ATM PE</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>EMA Crossover</strong></td>
+                                <td>Fast (9) crosses above slow (21)</td>
+                                <td>Long</td>
+                                <td>ATM CE</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>EMA Crossover</strong></td>
+                                <td>Fast crosses below slow</td>
+                                <td>Short</td>
+                                <td>ATM PE</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>Bollinger Bands</strong></td>
+                                <td>Close above upper band</td>
+                                <td>Long</td>
+                                <td>ATM CE</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>Bollinger Bands</strong></td>
+                                <td>Close below lower band</td>
+                                <td>Short</td>
+                                <td>ATM PE</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="key-info">
+                    <div class="key-label">📋 Approval Mode</div>
+                    <div class="key-value">Paper: Auto-enter | Live: Dashboard approval popup required</div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Exit Strategy</div>
+                    <div style="background: #1a3a3a; border-left: 3px solid #4ade80; padding: 12px; border-radius: 4px;">
+                        ✓ All signals use <strong>Shared Exit Manager</strong><br>
+                        ✓ -8% hard stop → +5% breakeven → +10% trail (+5%) → ₹500 ladder<br>
+                        ✓ Force Close: 15:10 IST (3:10 PM)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GBI-RBI -->
+        <div id="gbi-rbi" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">🎯 GBI-RBI (Green/Red Bar Ignored Pattern)</div>
+
+                <div class="grid-2">
+                    <div class="key-info">
+                        <div class="key-label">Entry Time</div>
+                        <div class="key-value">09:20 IST onwards</div>
+                    </div>
+                    <div class="key-info">
+                        <div class="key-label">Exit Time</div>
+                        <div class="key-value">15:10 IST (3:10 PM)</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Entry Criteria (5 Points)</div>
+                    <div style="background: #333; padding: 12px; border-radius: 4px;">
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">1. RBI Pattern (Long)</span>
+                            bar_a RED & bar_b.low > bar_a.low = setup confirmed
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">2. GBI Pattern (Short)</span>
+                            bar_a GREEN & bar_b.high < bar_a.high = setup confirmed
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">3. Entry Trigger</span>
+                            RBI: Close > bar_a.high | GBI: Close < bar_a.low
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">4. Strike Selection</span>
+                            RBI → ATM CE (Long) | GBI → ATM PE (Short)
+                        </div>
+                        <div>
+                            <span class="badge badge-entry">5. Stop Level</span>
+                            RBI: min(bar_a.low, bar_b.low) | GBI: max(bar_a.high, bar_b.high)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Entry Guards</div>
+                    <ul style="color: #999; margin-left: 20px;">
+                        <li>Already in position? → SKIP</li>
+                        <li>Time past 14:30 IST? → SKIP (NO_NEW_ENTRIES_AFTER)</li>
+                        <li>Daily loss halted? → SKIP (if session P&L < -0.6%)</li>
+                        <li>Expiry day last hour? → SKIP</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Exit Strategy</div>
+                    <div style="background: #1a3a3a; border-left: 3px solid #4ade80; padding: 12px; border-radius: 4px;">
+                        ✓ All patterns use <strong>Shared Exit Manager</strong><br>
+                        ✓ -8% hard stop → +5% breakeven → +10% trail (+5%) → ₹500 ladder<br>
+                        ✓ Force Close: 15:10 IST (3:10 PM)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORB-OV -->
+        <div id="orb-ov" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">⚡ ORB-OV (Power Bar Single Entry)</div>
+
+                <div class="grid-2">
+                    <div class="key-info">
+                        <div class="key-label">Entry Time</div>
+                        <div class="key-value">09:20 IST onwards</div>
+                    </div>
+                    <div class="key-info">
+                        <div class="key-label">Exit Time</div>
+                        <div class="key-value">15:10 IST (3:10 PM)</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Entry Criteria (5 Points)</div>
+                    <div style="background: #333; padding: 12px; border-radius: 4px;">
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">1. Volatility State: NARROW</span>
+                            MA20-MA200 spread ≤ 0.10% = scan for power bars
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">2. Volatility State: NEUTRAL</span>
+                            0.10% < spread < 0.40% = wait/hold existing only
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">3. Volatility State: WIDE</span>
+                            spread ≥ 0.40% = DROP setups, CLOSE ALL positions (high volatility exit regime)
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge badge-entry">4. Power Bar Detection</span>
+                            Elephant bar OR tail bar in NARROW state | Body ≥ 1.8× avg OR rejection wick
+                        </div>
+                        <div>
+                            <span class="badge badge-entry">5. Single Full Entry</span>
+                            Close beyond power bar high/low = ENTER FULL QTY AT ONCE (NO SCALING)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Position Management</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rule</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Entry Sizing</strong></td>
+                                <td>Full qty = floor(risk/stop_dist/lot) × lot | <span style="color: #ef4444;">NO half-size, NO adds</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stop Level</strong></td>
+                                <td>Bar1 high/low ± 1 tick (fixed from entry bar)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Premium Stop</strong></td>
+                                <td>Primary stop | Underlying-based ratchet disabled in current version</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Exit Strategy</div>
+                    <div style="background: #1a3a3a; border-left: 3px solid #4ade80; padding: 12px; border-radius: 4px;">
+                        ✓ Power bar uses <strong>Shared Exit Manager</strong><br>
+                        ✓ -8% hard stop → +5% breakeven → +10% trail (+5%) → ₹500 ladder<br>
+                        ✓ Force Close: 15:10 IST (3:10 PM)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCALPER BOT -->
+        <div id="scalper" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">⚡ SCALPER BOT (11 Strategies - 1-3 min)</div>
+
+                <div class="grid-2">
+                    <div class="key-info">
+                        <div class="key-label">Entry Time</div>
+                        <div class="key-value">09:20 IST (after chop window)</div>
+                    </div>
+                    <div class="key-info">
+                        <div class="key-label">Exit Time</div>
+                        <div class="key-value">15:09 IST (1 min early)</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">11 Scalping Strategies</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Strategy</th>
+                                <th>Entry Condition</th>
+                                <th>Stop Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>ORB Scalp</td>
+                                <td>Break 5-min range + volume</td>
+                                <td>Opposite range side</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>VWAP Reversion</td>
+                                <td>Price reverts from VWAP bands</td>
+                                <td>Band edge</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>EMA Pullback</td>
+                                <td>Fast EMA crosses slow, pullback to MA</td>
+                                <td>20-period EMA</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Momentum Ignition</td>
+                                <td>RSI extreme (>70 or <30) + volume</td>
+                                <td>Opposite extreme</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Bollinger Squeeze</td>
+                                <td>Squeeze <2% → expansion break</td>
+                                <td>Opposite band edge</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Supertrend Flip</td>
+                                <td>Supertrend trend flip</td>
+                                <td>Supertrend stop</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Pivot Bounce</td>
+                                <td>Bounce between pivot S/R</td>
+                                <td>Opposite pivot</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>OI/PCR Filter</td>
+                                <td>Open Interest ratio favors direction</td>
+                                <td>Support/resistance</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Momentum (NIFTY)</td>
+                                <td>NIFTY-specific momentum setup</td>
+                                <td>Key level</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>Squeeze (NIFTY)</td>
+                                <td>NIFTY band squeeze + break</td>
+                                <td>Band edge</td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td>VWAP EMA Composite</td>
+                                <td>VWAP + EMA alignment (same direction)</td>
+                                <td>Opposite alignment</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Risk Configuration</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Value</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Capital</td>
+                                <td>₹500,000</td>
+                                <td>5 lakh</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #ef4444;">MAX per Trade</span></td>
+                                <td><span style="color: #ef4444;">₹35,000</span></td>
+                                <td>Hard ceiling | Skip if 1 lot > ₹35k</td>
+                            </tr>
+                            <tr>
+                                <td>Daily Loss Limit</td>
+                                <td>-3% (₹15,000)</td>
+                                <td>Circuit breaker</td>
+                            </tr>
+                            <tr>
+                                <td>Hard Stop</td>
+                                <td>-8% premium</td>
+                                <td>Entry - 8%</td>
+                            </tr>
+                            <tr>
+                                <td>Trail Trigger</td>
+                                <td>+10% premium gain</td>
+                                <td>Activate trailing</td>
+                            </tr>
+                            <tr>
+                                <td>Trail Distance</td>
+                                <td>5% below peak</td>
+                                <td>(higher than other bots: 15%)</td>
+                            </tr>
+                            <tr>
+                                <td>Ladder Start</td>
+                                <td>₹1,000 profit</td>
+                                <td>Profit lock engages</td>
+                            </tr>
+                            <tr>
+                                <td>Ladder Increment</td>
+                                <td>₹500 per step</td>
+                                <td>Rupee-based locking</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Timing Rules</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Rule</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>09:15-09:20 IST</td>
+                                <td><span style="color: #fbbf24;">AVOID</span> - Market open chop (first 5 minutes)</td>
+                            </tr>
+                            <tr>
+                                <td>09:20 IST</td>
+                                <td><span style="color: #4ade80;">SESSION START</span> - First entry window opens</td>
+                            </tr>
+                            <tr>
+                                <td>15:09 IST</td>
+                                <td><span style="color: #ef4444;">SQUARE OFF</span> - Force close ALL positions</td>
+                            </tr>
+                            <tr>
+                                <td>15:15 IST</td>
+                                <td><span style="color: #999;">SESSION END</span> - Stop polling bars</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Exit Strategy</div>
+                    <div style="background: #1a3a3a; border-left: 3px solid #4ade80; padding: 12px; border-radius: 4px;">
+                        ✓ All 11 strategies use <strong>Shared Exit Manager</strong><br>
+                        ✓ -8% hard stop → +5% breakeven → +10% trail (+5%) → ₹500 ladder<br>
+                        ✓ Force Close: 15:09 IST (1 minute before market close)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Deactivate all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Activate button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

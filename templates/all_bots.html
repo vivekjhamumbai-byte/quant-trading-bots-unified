@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All 9 Bots Configuration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Consolas', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .container { max-width: 1800px; margin: 0 auto; }
+        .header {
+            background: #2a2a2a;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        h1 { color: #fff; margin-bottom: 10px; }
+        .subtitle { color: #999; font-size: 0.9em; }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-button {
+            padding: 10px 14px;
+            background: #333;
+            border: 1px solid #555;
+            color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        .tab-button:hover { background: #444; border-color: #666; }
+        .tab-button.active { background: #667eea; border-color: #667eea; color: #fff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .bot-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .bot-number {
+            font-size: 0.9em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .bot-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 16px;
+        }
+
+        .section {
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .timing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .timing-box {
+            background: #333;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+        }
+        .timing-label {
+            color: #999;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+        .timing-value {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .criteria-box {
+            background: #333;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #4ade80;
+            margin-bottom: 8px;
+        }
+        .criteria-text {
+            color: #e0e0e0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            background: #1a1a1a;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+            border-collapse: collapse;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background: #333;
+            font-weight: bold;
+            color: #fff;
+        }
+        tr:hover { background: #2a2a2a; }
+
+        .exit-box {
+            background: #1a3a3a;
+            border-left: 3px solid #4ade80;
+            padding: 16px;
+            border-radius: 4px;
+            color: #4ade80;
+            line-height: 1.8;
+            font-size: 0.9em;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-box {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            padding: 16px;
+            border-radius: 4px;
+        }
+
+        .summary-box-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #999;
+        }
+
+        .summary-value {
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .master-table {
+            width: 100%;
+            background: #1a1a1a;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+
+        .master-table th {
+            background: #333;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .master-table td {
+            padding: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .master-table tr:hover {
+            background: #2a2a2a;
+        }
+
+        .time-label {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 ALL 9 BOTS - COMPLETE CONFIGURATION</h1>
+            <p class="subtitle">Entry/Exit Logic, Timing, Rules, Exit Strategy | Download: MASTER_ALL_9_BOTS_COMPLETE.xlsx</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs" id="tabs">
+            <button class="tab-button active" onclick="switchTab('master')">Master Summary</button>
+            <button class="tab-button" onclick="switchTab('timetable')">Trading Timetable</button>
+            <button class="tab-button" onclick="switchTab('exit-rules')">Exit Rules</button>
+            <button class="tab-button" onclick="switchTab('bot1')">1. Oliver Velez</button>
+            <button class="tab-button" onclick="switchTab('bot2')">2. SENSEX Hero</button>
+            <button class="tab-button" onclick="switchTab('bot3')">3. ORB Lite</button>
+            <button class="tab-button" onclick="switchTab('bot4')">4. ORB-OV</button>
+            <button class="tab-button" onclick="switchTab('bot5')">5. Signal Bot</button>
+            <button class="tab-button" onclick="switchTab('bot6')">6. GBI-RBI</button>
+            <button class="tab-button" onclick="switchTab('bot7')">7. Trail SL</button>
+            <button class="tab-button" onclick="switchTab('bot8')">8. Scalper</button>
+            <button class="tab-button" onclick="switchTab('bot9')">9. gbi-rbi-bot</button>
+        </div>
+
+        <!-- MASTER SUMMARY -->
+        <div id="master" class="tab-content active">
+            <div class="bot-card">
+                <div class="bot-title">MASTER SUMMARY - ALL 9 BOTS</div>
+                <table class="master-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Bot Name</th>
+                            <th>Entry Time</th>
+                            <th>Exit Time</th>
+                            <th>Instruments</th>
+                            <th>Max Positions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>Oliver Velez NIFTY</strong></td>
+                            <td><span class="time-label">09:15-09:30</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>NIFTY Futures</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>SENSEX Hero-Zero</strong></td>
+                            <td><span class="time-label">09:20</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>SENSEX Options</td>
+                            <td>Multiple</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>ORB Lite</strong></td>
+                            <td><span class="time-label">09:15-09:30</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>NIFTY/BANKNIFTY</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><strong>ORB-OV</strong></td>
+                            <td><span class="time-label">09:20</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>All Indices</td>
+                            <td>Flexible</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><strong>Signal Bot</strong></td>
+                            <td><span class="time-label">09:20</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>Indices + Stocks</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><strong>GBI-RBI</strong></td>
+                            <td><span class="time-label">09:20</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>Indices + F&O</td>
+                            <td>Multiple</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><strong>bot_page_paper (Trail SL)</strong></td>
+                            <td><span class="time-label">Manual</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>All</td>
+                            <td>Manual</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td><strong>Scalper Bot</strong></td>
+                            <td><span class="time-label">09:20</span></td>
+                            <td><span class="time-label">15:09 ⚠ 1 MIN EARLY</span></td>
+                            <td>NIFTY, BANKNIFTY, Stocks</td>
+                            <td>Multiple</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td><strong>gbi-rbi-bot</strong></td>
+                            <td><span class="time-label">09:20</span></td>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>Indices + NSE F&O</td>
+                            <td>Multiple</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TIMETABLE -->
+        <div id="timetable" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">DAILY TRADING TIMETABLE (IST)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Event</th>
+                            <th>Bots Affected</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="time-label">09:15</span></td>
+                            <td>Market Open</td>
+                            <td>Oliver Velez NIFTY, ORB Lite</td>
+                            <td>START ENTRY - Build 15-min range</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">09:20</span></td>
+                            <td>Range Locked</td>
+                            <td>Oliver Velez NIFTY, ORB Lite</td>
+                            <td>Ready to trade breakouts</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">09:20</span></td>
+                            <td>Entry Window Opens</td>
+                            <td>SENSEX Hero, ORB-OV, Signal Bot, GBI-RBI, Scalper, gbi-rbi-bot</td>
+                            <td>BEGIN SCANNING ALL BOTS</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">09:20-09:30</span></td>
+                            <td>Avoid Window</td>
+                            <td>Scalper Bot ONLY</td>
+                            <td>WAIT (market chop - first 5 min)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">14:30</span></td>
+                            <td>⚠ No New Entries</td>
+                            <td>ALL 9 BOTS</td>
+                            <td>HALT all new entries - Last 40 minutes</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">15:09</span></td>
+                            <td>🚨 Scalper Closeout</td>
+                            <td>Scalper Bot ONLY</td>
+                            <td>FORCE CLOSE all positions (1 min early!)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">15:10</span></td>
+                            <td>🚨 EOD Closeout</td>
+                            <td>Oliver Velez, SENSEX Hero, ORB Lite, ORB-OV, Signal Bot, GBI-RBI, Trail SL, gbi-rbi-bot</td>
+                            <td>FORCE CLOSE all positions</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-label">15:15</span></td>
+                            <td>Session End</td>
+                            <td>ALL 9 BOTS</td>
+                            <td>Stop polling data</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- EXIT RULES -->
+        <div id="exit-rules" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">SHARED EXIT MANAGER (ALL BOTS)</div>
+
+                <div class="section">
+                    <div class="section-title">Exit Phases</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Trigger Condition</th>
+                                <th>Action</th>
+                                <th>Stop Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Phase 1: Hard Stop</strong></td>
+                                <td>Opening position (any loss)</td>
+                                <td>Close if premium ≤ entry × (1 - 0.08)</td>
+                                <td><span style="color: #ef4444;">-8% from entry</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 2: Breakeven</strong></td>
+                                <td>Premium gained +5%</td>
+                                <td>Move stop to entry price</td>
+                                <td><span style="color: #4ade80;">Entry price (no loss)</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 3: Trailing Stop</strong></td>
+                                <td>Premium gained +10%</td>
+                                <td>Stop trails 5% below peak</td>
+                                <td><span style="color: #4ade80;">5% below peak</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Step Ladder Profit Locking</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Trigger</th>
+                                <th>Stop Floor</th>
+                                <th>Increment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Rung 0</td>
+                                <td>peak_profit ≥ ₹1,000</td>
+                                <td>Ladder activates</td>
+                                <td>₹1,000 minimum</td>
+                            </tr>
+                            <tr>
+                                <td>Rung 1-3+</td>
+                                <td>Peak ₹1,000+</td>
+                                <td>Continues in steps</td>
+                                <td><span style="color: #667eea;">₹500 per step</span> (most bots)</td>
+                            </tr>
+                            <tr>
+                                <td>Trail SL Only</td>
+                                <td>Same rules</td>
+                                <td>Same start</td>
+                                <td><span style="color: #fbbf24;">₹300 per step</span> (different!)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOT 1: Oliver Velez NIFTY -->
+        <div id="bot1" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-number">Bot #1 of 9</div>
+                <div class="bot-title">Oliver Velez NIFTY</div>
+
+                <div class="timing-grid">
+                    <div class="timing-box">
+                        <div class="timing-label">Entry Time</div>
+                        <div class="timing-value">09:15 - 09:30 IST</div>
+                    </div>
+                    <div class="timing-box">
+                        <div class="timing-label">Exit Time</div>
+                        <div class="timing-value">15:10 IST (3:10 PM)</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Entry Criteria (5 Points)</div>
+                    <div class="criteria-box">
+                        <div class="criteria-text">
+                            1. <strong>Time Window:</strong> Open 09:15 IST, ORB duration 15 minutes until 09:30<br>
+                            2. <strong>Range Setup:</strong> Lock high/low by 09:30 from 15-min LTP polls (not candle OHLC)<br>
+                            3. <strong>Breakout Signal:</strong> Close 1% above ORB high = BUY CE | Close 1% below ORB low = BUY PE<br>
+                            4. <strong>Strike Selection:</strong> ATM ± 1 step (NIFTY: 50pt, BANKNIFTY: 100pt)<br>
+                            5. <strong>Position Size:</strong> risk_amt (₹500) / stop_dist / lot = qty | Rounded to whole lots
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Position Rules</div>
+                    <table>
+                        <tr>
+                            <td><strong>Max Concurrent</strong></td>
+                            <td>2 positions (NIFTY + BANKNIFTY)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>No New Entries After</strong></td>
+                            <td>14:30 IST (Last 40 minutes)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Daily Loss Gate</strong></td>
+                            <td>-0.6% (₹3,000 on ₹500k capital)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Exit Strategy</div>
+                    <div class="exit-box">
+                        ✓ Phase 1: Hard Stop <strong>-8%</strong><br>
+                        ✓ Phase 2: Breakeven at <strong>+5% gain</strong><br>
+                        ✓ Phase 3: Trail <strong>+10% gain, 5% below peak</strong><br>
+                        ✓ Ladder: <strong>₹500 steps</strong> starting at ₹1,000 profit<br>
+                        ✓ Force Close: <strong>15:10 IST (3:10 PM)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOT 2-9: Placeholders for space -->
+        <div id="bot2" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-number">Bot #2 of 9</div>
+                <div class="bot-title">SENSEX Hero-Zero</div>
+                <div class="timing-grid">
+                    <div class="timing-box">
+                        <div class="timing-label">Entry Time</div>
+                        <div class="timing-value">09:20 IST onwards</div>
+                    </div>
+                    <div class="timing-box">
+                        <div class="timing-label">Exit Time</div>
+                        <div class="timing-value">15:10 IST (3:10 PM)</div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Strategy</div>
+                    <p style="color: #999; margin-bottom: 12px;">See Excel file: MASTER_ALL_9_BOTS_COMPLETE.xlsx for complete details</p>
+                    <div class="criteria-box">
+                        <div class="criteria-text">
+                            • Expiry Day Only: Trades on expiry Thursdays (~4 trades/month)<br>
+                            • Entry Trigger: Price action at support/resistance levels<br>
+                            • Direction: Long CE on support | Short PE on resistance<br>
+                            • Uses Shared Exit Manager: -8% → +5% → +10% trail → ₹500 ladder → 15:10 close
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remaining bots placeholder -->
+        <div id="bot3" class="tab-content">
+            <div class="bot-card">
+                <p style="color: #999;">For detailed information on all 9 bots, please refer to:<br><strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+                <p style="color: #999; margin-top: 12px; font-size: 0.9em;">
+                    This page shows highlights. The Excel file contains:<br>
+                    ✓ Complete entry criteria for ALL 9 bots<br>
+                    ✓ Position rules and restrictions<br>
+                    ✓ Detailed exit strategies<br>
+                    ✓ Trading timetable<br>
+                    ✓ Shared exit manager rules
+                </p>
+            </div>
+        </div>
+
+        <div id="bot4" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">ORB-OV Entry Criteria (5 Points)</div>
+                <div class="criteria-box">
+                    <div class="criteria-text">
+                        1. <strong>State: NARROW</strong> (MA20-MA200 ≤ 0.10%) = Scan for power bars<br>
+                        2. <strong>State: NEUTRAL</strong> (0.10% < spread < 0.40%) = Wait/hold existing only<br>
+                        3. <strong>State: WIDE</strong> (spread ≥ 0.40%) = DROP setups, CLOSE ALL<br>
+                        4. <strong>Power Bar Detection:</strong> Elephant bar OR tail bar | Body ≥ 1.8× avg<br>
+                        5. <strong>Single Full Entry:</strong> ENTER FULL QTY AT ONCE (NO SCALING)
+                    </div>
+                </div>
+                <p style="color: #999; margin-top: 20px;">Download Excel for all other bots: <strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+            </div>
+        </div>
+
+        <div id="bot5" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">Signal Bot - 4 Multi-Indicators</div>
+                <div class="criteria-box">
+                    <div class="criteria-text">
+                        1. <strong>VWAP Reversion:</strong> Price reverts from bands<br>
+                        2. <strong>RSI Momentum:</strong> Oversold <30 or Overbought >70<br>
+                        3. <strong>EMA Crossover:</strong> Fast (9) crosses Slow (21)<br>
+                        4. <strong>Bollinger Bands:</strong> Price breaks bands<br>
+                        5. <strong>Approval Mode:</strong> Paper auto | Live requires dashboard approval
+                    </div>
+                </div>
+                <p style="color: #999; margin-top: 20px;">Download Excel for all other bots: <strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+            </div>
+        </div>
+
+        <div id="bot6" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">GBI-RBI - Price Action Pattern</div>
+                <div class="criteria-box">
+                    <div class="criteria-text">
+                        1. <strong>RBI (Long):</strong> bar_a RED & bar_b.low > bar_a.low<br>
+                        2. <strong>GBI (Short):</strong> bar_a GREEN & bar_b.high < bar_a.high<br>
+                        3. <strong>Entry Trigger:</strong> RBI close > bar_a.high | GBI close < bar_a.low<br>
+                        4. <strong>Strike:</strong> RBI → CE (Long) | GBI → PE (Short)<br>
+                        5. <strong>Stop Level:</strong> RBI → min(bar_a.low, bar_b.low) | GBI → max(bar_a.high, bar_b.high)
+                    </div>
+                </div>
+                <p style="color: #999; margin-top: 20px;">Download Excel for all other bots: <strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+            </div>
+        </div>
+
+        <div id="bot7" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">bot_page_paper (Manual Trail SL)</div>
+                <div class="criteria-box">
+                    <div class="criteria-text">
+                        • <strong>Manual Entry:</strong> User enters positions manually<br>
+                        • <strong>Automatic Management:</strong> Uses Shared Position Manager<br>
+                        • <strong>Step Ladder:</strong> ₹300 increment (different from other bots!)<br>
+                        • <strong>Exit Time:</strong> 15:10 IST force close<br>
+                        • <strong>Use Case:</strong> Manual positions, trailing SL automation
+                    </div>
+                </div>
+                <p style="color: #999; margin-top: 20px;">Download Excel for all other bots: <strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+            </div>
+        </div>
+
+        <div id="bot8" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">Scalper Bot - 11 Strategies (1-3 min)</div>
+                <div class="criteria-box">
+                    <div class="criteria-text">
+                        <strong>11 Strategies:</strong> ORB Scalp, VWAP Reversion, EMA Pullback, Momentum Ignition, Bollinger Squeeze, Supertrend Flip, Pivot Bounce, OI/PCR Filter, Momentum (NIFTY), Squeeze (NIFTY), VWAP EMA Composite<br>
+                        <br>
+                        <strong>Exit Time: 15:09 IST (1 MINUTE EARLY!)</strong><br>
+                        <strong>MAX per Trade: ₹35,000 (Hard ceiling!)</strong><br>
+                        <strong>Daily Loss Limit: -3% (₹15,000)</strong>
+                    </div>
+                </div>
+                <p style="color: #999; margin-top: 20px;">Download Excel for all other bots: <strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+            </div>
+        </div>
+
+        <div id="bot9" class="tab-content">
+            <div class="bot-card">
+                <div class="bot-title">gbi-rbi-bot - Green/Red Bar Ignored</div>
+                <div class="criteria-box">
+                    <div class="criteria-text">
+                        • <strong>RBI Pattern:</strong> Red Bar Ignored - Consecutive bars setup<br>
+                        • <strong>GBI Pattern:</strong> Green Bar Ignored - Consecutive bars setup<br>
+                        • <strong>Scanning:</strong> Indices + NSE F&O stocks continuously<br>
+                        • <strong>Entry Guards:</strong> Checks position, time, daily loss, expiry day<br>
+                        • <strong>Exit:</strong> Shared Exit Manager: -8% → +5% → +10% trail → ₹500 ladder → 15:10 close
+                    </div>
+                </div>
+                <p style="color: #999; margin-top: 20px;">Download Excel for all other bots: <strong>MASTER_ALL_9_BOTS_COMPLETE.xlsx</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -13,13 +13,15 @@ the same way your other bots already do.
 import os
 
 # ---------------------------------------------------------------------------
-# MODE — LIVE MODE ENABLED FOR REAL TRADING
-# User approved live trading: 2026-09-12 16:45 IST
-# Real capital deployment: ACTIVE
-# Safety systems: ALL VERIFIED
+# MODE — PAPER MODE FOR TESTING & VALIDATION
+# User requested: Test profitability, identify drawbacks, zero risk
+# Real prices: YES (from mStock API)
+# Real orders: NO (simulated fills)
+# Real capital: NO (paper trades only)
+# Safety systems: ALL ACTIVE
 # ---------------------------------------------------------------------------
-MODE = "live"  # "backtest" | "paper" | "live"
-LIVE_MODE_ENABLED = True  # Real orders will be placed
+MODE = "paper"  # "backtest" | "paper" | "live"
+LIVE_MODE_ENABLED = False  # Paper fills only, no real orders
 
 # ---------------------------------------------------------------------------
 # Capital & risk — UNIFIED CONFIGURATION (All 6 Bots)

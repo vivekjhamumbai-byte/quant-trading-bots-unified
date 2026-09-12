@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: dashboard
+    container_name: trading-dashboard
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - TRADING_MODE=PAPER
+      - DASHBOARD_PORT=8765
+    networks:
+      - trading
+    restart: unless-stopped
+
+  velez_nifty:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: bot
+        BOT_NAME: oliver_velez_nifty
+    container_name: velez-nifty-bot
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - BOT_NAME=velez_nifty
+      - TRADING_MODE=PAPER
+    networks:
+      - trading
+    restart: unless-stopped
+
+  sensex_hero:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: bot
+        BOT_NAME: sensex_hero_zero
+    container_name: sensex-hero-bot
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - BOT_NAME=sensex_hero
+      - TRADING_MODE=PAPER
+    networks:
+      - trading
+    restart: unless-stopped
+
+  orb_lite:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: bot
+        BOT_NAME: orb_lite
+    container_name: orb-lite-bot
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - BOT_NAME=orb_lite
+      - TRADING_MODE=PAPER
+    networks:
+      - trading
+    restart: unless-stopped
+
+  orb_ov:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: bot
+        BOT_NAME: orb_ov
+    container_name: orb-ov-bot
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - BOT_NAME=orb_ov
+      - TRADING_MODE=PAPER
+    networks:
+      - trading
+    restart: unless-stopped
+
+  signal_bot:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: bot
+        BOT_NAME: signal_bot
+    container_name: signal-bot
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - BOT_NAME=signal_bot
+      - TRADING_MODE=PAPER
+    networks:
+      - trading
+    restart: unless-stopped
+
+  gbi_rbi:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVICE: bot
+        BOT_NAME: gbi_rbi
+    container_name: gbi-rbi-bot
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trade_book.csv:/app/trade_book.csv
+    environment:
+      - BOT_NAME=gbi_rbi
+      - TRADING_MODE=PAPER
+    networks:
+      - trading
+    restart: unless-stopped
+
+networks:
+  trading:
+    driver: bridge
+
+volumes:
+  trading_data:
+  trading_logs:

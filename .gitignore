@@ -1,0 +1,54 @@
+# Logs
+*.log
+logs/
+*.pyc
+__pycache__/
+
+# Data and cache
+data/*.json
+*.csv
+*.db
+*.sqlite
+cache/
+
+# Environment
+.env
+.env.local
+*.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials
+*.key
+*.pem
+credentials.json
+secrets.json
+
+# Docker
+.dockerignore
+Dockerfile.bak
+
+# Backups
+*.bak
+*.backup
+backup_*/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+env/
+ENV/
+node_modules/

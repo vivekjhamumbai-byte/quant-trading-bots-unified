@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard 8765</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Top Navigation Tabs */
+        .top-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b00;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+            min-width: 120px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #444;
+            border-color: #666;
+        }
+
+        .tab-name {
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        .tab-price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4ade80;
+            margin-top: 4px;
+        }
+
+        /* Trading Bots Section */
+        .section-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            margin: 24px 0 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bots-info {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .bots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .bot-card {
+            background: #2a2a2a;
+            border: 2px solid #444;
+            border-radius: 6px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .bot-card.running {
+            border-color: #4ade80;
+            background: #1a3a1a;
+        }
+
+        .bot-card.waiting {
+            border-color: #fbbf24;
+            background: #3a3a1a;
+        }
+
+        .bot-card.error {
+            border-color: #ef4444;
+            background: #3a1a1a;
+        }
+
+        .bot-card:hover {
+            border-color: #666;
+            transform: translateY(-2px);
+        }
+
+        .bot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .bot-name {
+            font-weight: bold;
+            color: #fff;
+            font-size: 0.95em;
+        }
+
+        .bot-status-badge {
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .badge-running {
+            background: #4ade80;
+            color: #000;
+        }
+
+        .badge-waiting {
+            background: #fbbf24;
+            color: #000;
+        }
+
+        .badge-error {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .bot-mode {
+            font-size: 0.8em;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .bot-mode-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #444;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .bot-status-line {
+            font-size: 0.8em;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .bot-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 6px 8px;
+            font-size: 0.75em;
+            border: 1px solid #555;
+            background: #333;
+            color: #e0e0e0;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-small:hover {
+            background: #444;
+            border-color: #666;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+            border-color: #c00;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .stop-all-btn {
+            background: #ef4444;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .stop-all-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Manual Trail SL Section */
+        .trail-sl-section {
+            background: #2a2a2a;
+            border: 2px solid #666;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .trail-sl-title {
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .trail-sl-table {
+            width: 100%;
+            background: #333;
+            border-collapse: collapse;
+            border-radius: 4px;
+            overflow: hidden;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+        }
+
+        .trail-sl-table th,
+        .trail-sl-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .trail-sl-table th {
+            background: #1a1a1a;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .trail-sl-table input {
+            background: #444;
+            border: 1px solid #555;
+            color: #e0e0e0;
+            padding: 4px 8px;
+            border-radius: 3px;
+            width: 100%;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.8em;
+            padding: 8px;
+            background: #3a1a1a;
+            border-left: 3px solid #ef4444;
+            border-radius: 3px;
+            margin-top: 12px;
+        }
+
+        /* Summary Cards */
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: #2a2a2a;
+            border-left: 4px solid #666;
+            padding: 16px;
+            border-radius: 4px;
+        }
+
+        .summary-label {
+            font-size: 0.8em;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .summary-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .summary-value.negative {
+            color: #ef4444;
+        }
+
+        /* Trade History Section */
+        .trades-section {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        select, input {
+            background: #333;
+            border: 1px solid #555;
+            color: #e0e0e0;
+            padding: 6px 10px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #444;
+            color: #e0e0e0;
+            padding: 6px 12px;
+            border: 1px solid #555;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+            border-color: #666;
+        }
+
+        .trades-table {
+            width: 100%;
+            background: #1a1a1a;
+            border-collapse: collapse;
+            border-radius: 4px;
+            overflow: hidden;
+            font-size: 0.8em;
+        }
+
+        .trades-table th,
+        .trades-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .trades-table th {
+            background: #333;
+            font-weight: bold;
+            color: #fff;
+            position: sticky;
+            top: 0;
+        }
+
+        .trades-table tr:hover {
+            background: #2a2a2a;
+        }
+
+        .status-open {
+            color: #4ade80;
+        }
+
+        .status-close {
+            color: #fbbf24;
+        }
+
+        .pnl-positive {
+            color: #4ade80;
+        }
+
+        .pnl-negative {
+            color: #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 12px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Tabs with Prices -->
+        <div class="top-tabs" id="price-tabs">
+            <div class="loading">Loading prices...</div>
+        </div>
+
+        <!-- Trading Bots Section -->
+        <div class="section-title">
+            Trading Bots
+            <span class="bots-info">
+                <span id="running-count">0</span> running |
+                <span id="status-time">--:--</span>
+                <button class="stop-all-btn" onclick="stopAllBots()">STOP ALL BOTS</button>
+            </span>
+        </div>
+
+        <div class="bots-grid" id="bots-container">
+            <div class="loading">Loading bots...</div>
+        </div>
+
+        <!-- Manual Trail SL Section -->
+        <div class="trail-sl-section">
+            <div class="trail-sl-title">MANUAL A/C TRAIL SL - INSTRUMENT SELECTION</div>
+            <p style="font-size: 0.8em; color: #999; margin-bottom: 12px;">
+                Select instrument → Expiry → Strike → CE/PE → Qty. Auto-liquidate empty book. Collateral table every 5s. Last update <span id="trail-update">--:--:--</span>
+            </p>
+
+            <!-- Instrument Search & Selection -->
+            <div style="background: #333; padding: 12px; border-radius: 4px; margin-bottom: 12px; border: 1px solid #555;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; font-size: 0.85em;">
+
+                    <!-- Instrument Search -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">INSTRUMENT SEARCH</label>
+                        <input type="text" id="instrument-search" placeholder="Type NIFTY, INFY, etc..." style="width: 100%;">
+                        <div id="instrument-dropdown" style="display: none; position: absolute; background: #444; border: 1px solid #555; border-radius: 3px; max-height: 150px; overflow-y: auto; width: 200px; z-index: 1000;">
+                        </div>
+                    </div>
+
+                    <!-- Selected Instrument Display -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">SELECTED INSTRUMENT</label>
+                        <input type="text" id="instrument-display" placeholder="--" readonly style="width: 100%; background: #444; border: 1px solid #666;">
+                    </div>
+
+                    <!-- Lot Size Display -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">LOT SIZE</label>
+                        <input type="text" id="lot-size-display" placeholder="--" readonly style="width: 100%; background: #444; border: 1px solid #666;">
+                    </div>
+
+                    <!-- Expiry Selection -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">EXPIRY DATE</label>
+                        <select id="expiry-input" style="width: 100%;">
+                            <option value="">Select Expiry</option>
+                            <option value="2026-09-30">30 Sep 2026</option>
+                            <option value="2026-10-28">28 Oct 2026</option>
+                            <option value="2026-11-25">25 Nov 2026</option>
+                        </select>
+                    </div>
+
+                    <!-- Strike Selection -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">STRIKE PRICE</label>
+                        <input type="number" id="strike-input" placeholder="Strike" step="50" style="width: 100%;">
+                    </div>
+
+                    <!-- CE/PE Selection -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">CE / PE</label>
+                        <select id="cetype-input" style="width: 100%;">
+                            <option value="">Select Type</option>
+                            <option value="CE">CE (Call)</option>
+                            <option value="PE">PE (Put)</option>
+                        </select>
+                    </div>
+
+                    <!-- Quantity in Lots -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">QUANTITY (LOTS)</label>
+                        <input type="number" id="qty-input" placeholder="1" value="1" min="1" style="width: 100%;">
+                    </div>
+
+                    <!-- Entry Price -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">ENTRY PRICE</label>
+                        <input type="number" id="entry-price-input" placeholder="0.00" step="0.05" style="width: 100%;">
+                    </div>
+
+                    <!-- Current Price -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">CURRENT PRICE</label>
+                        <input type="number" id="current-price-input" placeholder="0.00" step="0.05" style="width: 100%;">
+                    </div>
+
+                    <!-- SL % -->
+                    <div>
+                        <label style="color: #999; font-size: 0.8em;">STOP LOSS %</label>
+                        <input type="number" id="sl-pct-input" placeholder="8" value="8" step="0.5" style="width: 100%;">
+                    </div>
+
+                    <!-- Add Button -->
+                    <div style="display: flex; gap: 6px;">
+                        <button class="btn-secondary" onclick="addManualPosition()" style="flex: 1;">ADD POSITION</button>
+                        <button class="btn-secondary" onclick="clearManualForm()" style="flex: 1;">CLEAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Positions Table -->
+            <table class="trail-sl-table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Expiry</th>
+                        <th>Strike</th>
+                        <th>CE/PE</th>
+                        <th>Qty</th>
+                        <th>Entry</th>
+                        <th>Current</th>
+                        <th>P&L</th>
+                        <th>P&L %</th>
+                        <th>SL</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="manual-positions">
+                    <tr>
+                        <td colspan="11" style="text-align: center; color: #999; padding: 20px;">No manual positions added</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="trail-error" class="error-message" style="display: none;"></div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <div class="summary-label">TODAY</div>
+                <div class="summary-value" id="today-pnl">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">THIS WEEK</div>
+                <div class="summary-value" id="week-pnl">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">THIS MONTH</div>
+                <div class="summary-value" id="month-pnl">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">ALL TIME</div>
+                <div class="summary-value" id="alltime-pnl">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">TODAY'S P&L</div>
+                <div class="summary-value" id="today-pnl-detail">--</div>
+            </div>
+        </div>
+
+        <!-- Trade History Section -->
+        <div class="trades-section">
+            <div class="section-title">TRADE HISTORY</div>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">Status:</span>
+                    <select id="status-filter" onchange="updateTrades()">
+                        <option value="all">All</option>
+                        <option value="open">Open</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Bot:</span>
+                    <select id="bot-filter" onchange="updateTrades()">
+                        <option value="all">All Bots</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Symbol:</span>
+                    <select id="symbol-filter" onchange="updateTrades()">
+                        <option value="all">All Symbols</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <input type="date" id="date-from" placeholder="From" style="width: 150px;">
+                    <input type="date" id="date-to" placeholder="To" style="width: 150px;">
+                </div>
+
+                <button class="btn-secondary" onclick="updateTrades()">Apply Filters</button>
+                <button class="btn-secondary" onclick="clearFilters()">Clear Filters</button>
+            </div>
+
+            <table class="trades-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Bot</th>
+                        <th>Symbol</th>
+                        <th>Direction</th>
+                        <th>Event</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>P&L</th>
+                        <th>Stop</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="trades-body">
+                    <tr>
+                        <td colspan="10" style="text-align: center; color: #999;">Loading trades...</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="timestamp">Updated: <span id="last-update">--:--:--</span></div>
+        </div>
+    </div>
+
+    <script>
+        const BOTS = {{ bots | tojson }};
+        const updateInterval = 5000; // 5 seconds
+        let allInstruments = [];
+        let selectedInstrument = null;
+
+        // Load instruments on page load
+        async function loadInstruments() {
+            try {
+                const response = await fetch('/api/instruments');
+                const data = await response.json();
+                allInstruments = data.instruments;
+                console.log('Loaded instruments:', allInstruments.length);
+            } catch (error) {
+                console.error('Error loading instruments:', error);
+            }
+        }
+
+        // Instrument search with autocomplete
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBox = document.getElementById('instrument-search');
+            const dropdown = document.getElementById('instrument-dropdown');
+
+            if (searchBox) {
+                searchBox.addEventListener('input', function() {
+                    const query = this.value.toUpperCase().trim();
+
+                    if (query.length === 0) {
+                        dropdown.style.display = 'none';
+                        return;
+                    }
+
+                    const filtered = allInstruments.filter(instr =>
+                        instr.symbol.includes(query)
+                    ).slice(0, 15);
+
+                    if (filtered.length === 0) {
+                        dropdown.style.display = 'none';
+                        return;
+                    }
+
+                    dropdown.innerHTML = filtered.map(instr => `
+                        <div style="padding: 8px; border-bottom: 1px solid #555; cursor: pointer; color: #e0e0e0;"
+                             onclick="selectInstrument('${instr.symbol}', ${instr.lot_size})">
+                            <strong>${instr.symbol}</strong> <span style="color: #999; font-size: 0.85em;">Lot: ${instr.lot_size}</span>
+                        </div>
+                    `).join('');
+
+                    dropdown.style.display = 'block';
+                });
+
+                // Close dropdown when clicking elsewhere
+                document.addEventListener('click', function(e) {
+                    if (e.target !== searchBox && e.target !== dropdown) {
+                        dropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        function selectInstrument(symbol, lotSize) {
+            document.getElementById('instrument-search').value = symbol;
+            document.getElementById('instrument-display').value = symbol;
+            document.getElementById('lot-size-display').value = lotSize;
+            document.getElementById('instrument-dropdown').style.display = 'none';
+            selectedInstrument = { symbol, lotSize };
+        }
+
+        // Manual positions stored in localStorage
+        function getManualPositions() {
+            try {
+                return JSON.parse(localStorage.getItem('manual_positions')) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveManualPositions(positions) {
+            localStorage.setItem('manual_positions', JSON.stringify(positions));
+        }
+
+        function addManualPosition() {
+            const symbol = document.getElementById('instrument-display').value.trim().toUpperCase();
+            const expiry = document.getElementById('expiry-input').value;
+            const strike = document.getElementById('strike-input').value;
+            const ceType = document.getElementById('cetype-input').value;
+            const qty = parseInt(document.getElementById('qty-input').value);
+            const entryPrice = parseFloat(document.getElementById('entry-price-input').value);
+            const currentPrice = parseFloat(document.getElementById('current-price-input').value);
+            const slPct = parseFloat(document.getElementById('sl-pct-input').value);
+            const lotSize = parseInt(document.getElementById('lot-size-display').value) || 1;
+
+            if (!symbol || !expiry || !strike || !ceType || !qty || !entryPrice || !currentPrice) {
+                alert('Please fill all fields: Instrument, Expiry, Strike, CE/PE, Entry Price, Current Price');
+                return;
+            }
+
+            const positions = getManualPositions();
+            const position = {
+                id: Date.now(),
+                symbol,
+                expiry,
+                strike,
+                ceType,
+                qty: qty * lotSize, // Convert lots to quantity
+                lotSize,
+                lotCount: qty,
+                entryPrice,
+                currentPrice,
+                slPct,
+                createdAt: new Date().toISOString()
+            };
+
+            positions.push(position);
+            saveManualPositions(positions);
+            clearManualForm();
+            updateManualPositions();
+        }
+
+        function clearManualForm() {
+            document.getElementById('instrument-search').value = '';
+            document.getElementById('instrument-display').value = '';
+            document.getElementById('lot-size-display').value = '';
+            document.getElementById('expiry-input').value = '';
+            document.getElementById('strike-input').value = '';
+            document.getElementById('cetype-input').value = '';
+            document.getElementById('qty-input').value = '1';
+            document.getElementById('entry-price-input').value = '';
+            document.getElementById('current-price-input').value = '';
+            document.getElementById('sl-pct-input').value = '8';
+            selectedInstrument = null;
+        }
+
+        function updateManualPositions() {
+            const positions = getManualPositions();
+
+            if (positions.length === 0) {
+                document.getElementById('manual-positions').innerHTML =
+                    '<tr><td colspan="12" style="text-align: center; color: #999; padding: 20px;">No manual positions added</td></tr>';
+                return;
+            }
+
+            const html = positions.map(pos => {
+                const pnl = (pos.currentPrice - pos.entryPrice) * pos.qty;
+                const pnlPct = ((pos.currentPrice - pos.entryPrice) / pos.entryPrice) * 100;
+                const sl = pos.entryPrice * (1 - pos.slPct / 100);
+
+                const pnlClass = pnl >= 0 ? 'pnl-positive' : 'pnl-negative';
+
+                return `
+                    <tr>
+                        <td><strong>${pos.symbol}</strong></td>
+                        <td>${pos.expiry || '--'}</td>
+                        <td>${pos.strike || '--'}</td>
+                        <td>${pos.ceType}</td>
+                        <td>${pos.lotCount || pos.qty} lots</td>
+                        <td>₹${pos.entryPrice.toFixed(2)}</td>
+                        <td>₹${pos.currentPrice.toFixed(2)}</td>
+                        <td class="${pnlClass}"><strong>₹${pnl.toFixed(2)}</strong></td>
+                        <td class="${pnlClass}">${pnlPct.toFixed(2)}%</td>
+                        <td>₹${sl.toFixed(2)}</td>
+                        <td style="font-size: 0.75em;">
+                            <button class="btn-small" onclick="updatePrice(${pos.id})" style="width: 55px;">Update</button>
+                            <button class="btn-small btn-danger" onclick="removePosition(${pos.id})" style="width: 55px;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Update table headers to include new columns
+            const tableHeader = `
+                <tr>
+                    <th>Symbol</th>
+                    <th>Expiry</th>
+                    <th>Strike</th>
+                    <th>CE/PE</th>
+                    <th>Qty</th>
+                    <th>Entry</th>
+                    <th>Current</th>
+                    <th>P&L</th>
+                    <th>P&L %</th>
+                    <th>SL</th>
+                    <th>Action</th>
+                </tr>
+            `;
+
+            document.getElementById('manual-positions').parentElement.innerHTML = tableHeader + `<tbody id="manual-positions">${html}</tbody>`;
+            document.getElementById('manual-positions').innerHTML = html;
+            document.getElementById('trail-update').textContent = new Date().toLocaleTimeString();
+        }
+
+        function updatePrice(positionId) {
+            const newPrice = prompt('Enter new current price:');
+            if (newPrice === null) return;
+
+            const positions = getManualPositions();
+            const pos = positions.find(p => p.id === positionId);
+            if (pos) {
+                pos.currentPrice = parseFloat(newPrice);
+                saveManualPositions(positions);
+                updateManualPositions();
+            }
+        }
+
+        function removePosition(positionId) {
+            if (confirm('Remove this position?')) {
+                let positions = getManualPositions();
+                positions = positions.filter(p => p.id !== positionId);
+                saveManualPositions(positions);
+                updateManualPositions();
+            }
+        }
+
+        async function updatePrices() {
+            try {
+                const response = await fetch('/api/nifty-price');
+                const data = await response.json();
+
+                const priceData = [
+                    { name: 'NIFTY', price: data.nifty },
+                    { name: 'BANK NIFTY', price: data.banknifty },
+                    { name: 'SENSEX', price: data.sensex },
+                    { name: 'MIDCAPNIFTY', price: data.midcapnifty },
+                    { name: 'FINNIFTY', price: data.finnifty },
+                    { name: 'INDIA VIX', price: data.india_vix }
+                ];
+
+                const tabsHtml = priceData.map(p => `
+                    <div class="tab">
+                        <div class="tab-name">${p.name}</div>
+                        <div class="tab-price">${p.price.toFixed(2)}</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('price-tabs').innerHTML = tabsHtml;
+            } catch (error) {
+                console.error('Error fetching prices:', error);
+            }
+        }
+
+        async function updateBots() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                const botsHtml = BOTS.map(bot => {
+                    const botData = data.bots[bot] || {};
+                    const status = botData.status || 'WAITING';
+                    const statusClass = status === 'RUNNING' ? 'running' : status === 'ERROR' ? 'error' : 'waiting';
+                    const badgeClass = `badge-${status.toLowerCase()}`;
+
+                    return `
+                        <div class="bot-card ${statusClass}">
+                            <div class="bot-header">
+                                <span class="bot-name">${bot}</span>
+                                <span class="bot-status-badge ${badgeClass}">${status}</span>
+                            </div>
+                            <div class="bot-mode">
+                                <span class="bot-mode-badge">${botData.mode || 'PAPER'}</span>
+                            </div>
+                            <div class="bot-status-line">Not Responding</div>
+                            <div class="bot-controls">
+                                <button class="btn-small" onclick="startBot('${bot}')">Start</button>
+                                <button class="btn-small btn-danger" onclick="killBot('${bot}')">Stop</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('bots-container').innerHTML = botsHtml;
+                document.getElementById('status-time').textContent = new Date().toLocaleTimeString();
+
+                // Count running bots
+                const running = Object.values(data.bots).filter(b => b.status === 'RUNNING').length;
+                document.getElementById('running-count').textContent = running;
+            } catch (error) {
+                console.error('Error updating bots:', error);
+            }
+        }
+
+        async function updatePnL() {
+            try {
+                const response = await fetch('/api/pnl');
+                const data = await response.json();
+
+                const format = (v) => `₹${v.toFixed(2)}`;
+                const addClass = (v) => v < 0 ? ' class="negative"' : '';
+
+                document.getElementById('today-pnl').textContent = format(data.today);
+                document.getElementById('today-pnl').className = 'summary-value' + (data.today < 0 ? ' negative' : '');
+
+                document.getElementById('week-pnl').textContent = format(data.this_week);
+                document.getElementById('week-pnl').className = 'summary-value' + (data.this_week < 0 ? ' negative' : '');
+
+                document.getElementById('month-pnl').textContent = format(data.this_month);
+                document.getElementById('month-pnl').className = 'summary-value' + (data.this_month < 0 ? ' negative' : '');
+
+                document.getElementById('alltime-pnl').textContent = format(data.all_time);
+                document.getElementById('alltime-pnl').className = 'summary-value' + (data.all_time < 0 ? ' negative' : '');
+
+                // MARKET CLOSED (after 3:30 PM): Show closed positions with P&L
+                if (data.market_closed) {
+                    if (data.closed_trades && data.closed_trades.length > 0) {
+                        const closedHtml = data.closed_trades.map(trade => `
+                            <div style="padding: 8px; background: #2a2a2a; border-left: 3px solid ${trade.pnl >= 0 ? '#4ade80' : '#ef4444'}; margin-bottom: 6px;">
+                                <strong>${trade.symbol}</strong> | PNL: <span style="color: ${trade.pnl >= 0 ? '#4ade80' : '#ef4444'};">₹${trade.pnl.toFixed(2)}</span>
+                            </div>
+                        `).join('');
+                        const closedSection = document.querySelector('.trail-sl-section');
+                        if (closedSection) {
+                            const existingClosedDiv = closedSection.querySelector('.closed-positions-display');
+                            if (!existingClosedDiv) {
+                                const newDiv = document.createElement('div');
+                                newDiv.className = 'closed-positions-display';
+                                newDiv.innerHTML = '<div style="font-size: 0.9em; font-weight: bold; color: #fbbf24; margin: 12px 0;">TODAY CLOSED POSITIONS:</div>' + closedHtml;
+                                closedSection.appendChild(newDiv);
+                            }
+                        }
+                    }
+                } else {
+                    // MARKET OPEN: Show open positions
+                    const existingClosedDiv = document.querySelector('.closed-positions-display');
+                    if (existingClosedDiv) {
+                        existingClosedDiv.remove();
+                    }
+
+                    if (data.open_positions && data.open_positions.length > 0) {
+                        const posHtml = data.open_positions.map(pos => `
+                            <tr>
+                                <td>${pos.symbol}</td>
+                                <td>${pos.direction}</td>
+                                <td>CE</td>
+                                <td><input type="number" value="${pos.qty}"></td>
+                                <td><input type="number" value="${pos.entry_price.toFixed(2)}"></td>
+                                <td><button class="btn-small">Add</button></td>
+                            </tr>
+                        `).join('');
+                        if (document.getElementById('open-positions')) {
+                            document.getElementById('open-positions').innerHTML = posHtml;
+                        }
+                    } else {
+                        if (document.getElementById('open-positions')) {
+                            document.getElementById('open-positions').innerHTML = '<td colspan="6" style="text-align: center; color: #999;">No open positions</td>';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating P&L:', error);
+            }
+        }
+
+        async function updateTrades() {
+            try {
+                const status = document.getElementById('status-filter').value;
+                const bot = document.getElementById('bot-filter').value;
+                const symbol = document.getElementById('symbol-filter').value;
+
+                const url = `/api/trades?status=${status}&bot=${bot}&symbol=${symbol}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                const tradesHtml = data.trades.map(trade => `
+                    <tr>
+                        <td>${trade.timestamp}</td>
+                        <td>${trade.bot_name}</td>
+                        <td>${trade.symbol}</td>
+                        <td>${trade.direction}</td>
+                        <td class="status-${trade.event.toLowerCase()}">${trade.event}</td>
+                        <td>${trade.price}</td>
+                        <td>${trade.qty}</td>
+                        <td class="pnl-${trade.pnl >= 0 ? 'positive' : 'negative'}">${trade.pnl.toFixed(2)}</td>
+                        <td>${trade.stop_price}</td>
+                        <td>${trade.status}</td>
+                    </tr>
+                `).join('');
+
+                document.getElementById('trades-body').innerHTML = tradesHtml || '<tr><td colspan="10" style="text-align: center; color: #999;">No trades found</td></tr>';
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.error('Error updating trades:', error);
+            }
+        }
+
+        async function loadSymbols() {
+            try {
+                const response = await fetch('/api/symbols');
+                const data = await response.json();
+
+                const symbolSelect = document.getElementById('symbol-filter');
+                const botSelect = document.getElementById('bot-filter');
+
+                data.symbols.forEach(symbol => {
+                    const option = document.createElement('option');
+                    option.value = symbol;
+                    option.textContent = symbol;
+                    symbolSelect.appendChild(option);
+                });
+
+                BOTS.forEach(bot => {
+                    const option = document.createElement('option');
+                    option.value = bot;
+                    option.textContent = bot;
+                    botSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading symbols:', error);
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('status-filter').value = 'all';
+            document.getElementById('bot-filter').value = 'all';
+            document.getElementById('symbol-filter').value = 'all';
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            updateTrades();
+        }
+
+        async function startBot(bot) {
+            alert(`Starting ${bot}...`);
+        }
+
+        async function killBot(bot) {
+            if (confirm(`Stop ${bot}?`)) {
+                await fetch(`/api/kill-bot/${bot}`, { method: 'POST' });
+                updateBots();
+            }
+        }
+
+        async function stopAllBots() {
+            if (confirm('Stop ALL bots?')) {
+                await fetch('/api/kill-all', { method: 'POST' });
+                updateBots();
+            }
+        }
+
+        // Initial load
+        loadInstruments();
+        updatePrices();
+        updateBots();
+        updatePnL();
+        loadSymbols();
+        updateTrades();
+        updateManualPositions();
+
+        // Auto-refresh
+        setInterval(updatePrices, updateInterval);
+        setInterval(updateBots, updateInterval);
+        setInterval(updatePnL, updateInterval);
+        setInterval(updateTrades, updateInterval);
+        setInterval(updateManualPositions, updateInterval);
+    </script>
+</body>
+</html>
